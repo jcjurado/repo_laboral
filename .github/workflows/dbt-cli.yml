@@ -23,9 +23,6 @@ jobs:
         run: |
           pip install dbt-postgres
 
-      - name: Install dbt
-        run: pip install dbt
-
       - name: Run dbt build
         run: |
           dbt --version
