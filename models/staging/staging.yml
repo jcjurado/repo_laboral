@@ -1,0 +1,24 @@
+version: 2
+
+models:
+  - name: stg_customers
+    description: "Customer staging table"
+    columns:
+      - name: CustomerID
+        data_tests:
+          - not_null
+          - unique
+  - name: stg_orderDetail
+    description: "Order Detail staging table"
+    columns:
+      - name: SalesOrderDetailID
+        data_tests:
+        - not_null
+        - unique
+  - name: stg_orderHeader
+    description: "Order Header staging table"
+    columns:
+      - name: SalesOrderID
+        data_tests:
+        - not_null
+        - unique

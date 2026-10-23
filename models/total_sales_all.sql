@@ -1,0 +1,1 @@
+{{ dynamic_total_sales(ref('orders_model'), 'order_amount') }}

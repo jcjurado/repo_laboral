@@ -1,0 +1,16 @@
+version: 2
+
+sources:
+  - name: demo_dg_pg
+    database: obi
+    schema: raw
+    tables:
+      - name: Customer
+      - name: SalesOrderDetail
+      - name: SalesOrderHeader
+      - name: Person
+      - name: SalesTerritory
+      - name: Store
+      - name: Product
+      - name: ProductCategory
+      - name: ProductSubcategory

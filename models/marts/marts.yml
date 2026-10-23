@@ -1,0 +1,34 @@
+version: 2
+
+models:
+  - name: fact_orders
+    description: "A fact tabla with high grain"
+    columns:
+      - name: SalesOrderDetailID
+        description: "Column ID of eaht row that represents the detail of the order"
+        data_tests:
+          - not_null
+          - unique
+      - name: SalesOrderID
+        description: "ID of the order"
+        data_tests:
+          - not_null
+      - name: ModifiedDate
+        description: "Última fecha de modificación del detalle o de su encabezado; se usa como watermark incremental"
+      - name: GrossLineAmount
+        description: "Calculated field  UnitPrice * OrderQty" 
+        data_tests:
+          - not_null
+          - no_invalid_order_amounts:
+              config:
+                severity: error
+                warn_if: ">= 1"
+                error_if: "> 10"
+      - name: CustomerID
+        description: "CustomerID reference"
+        data_tests:
+        - relationships:
+              to: ref('dim_customers')
+              field: CustomerID
+              config:
+                severity: warn

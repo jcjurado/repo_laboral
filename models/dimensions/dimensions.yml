@@ -1,0 +1,17 @@
+version: 2
+
+models:
+  - name: "dim_customers"
+    description: "Customer dimension table"
+    columns:
+      - name: CustomerID
+        data_tests:
+        - not_null
+        - unique
+  - name: "dim_product"
+    description: "Customer dimension table"
+    columns:
+      - name: ProductID
+        data_tests:
+        - not_null
+        - unique
