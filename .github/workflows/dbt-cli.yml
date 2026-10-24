@@ -1,3 +1,4 @@
+
 name: dbt CI Pipeline
 
 on:
@@ -10,6 +11,21 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: obi
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d obi"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -17,18 +33,40 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: "3.12"
 
-      - name: Install dbt (Postgres adapter)
+      - name: Install dbt
         run: |
+          python -m pip install --upgrade pip
           pip install dbt-postgres
 
-      - name: Run dbt build
+      - name: Create dbt profile
         run: |
-          dbt --version
-          dbt debug || true 
-          dbt build
-        working-directory: .
+          mkdir -p ~/.dbt
+
+          cat > ~/.dbt/profiles.yml <<'EOF'
+          demo_dg_pg:
+            target: ci
+            outputs:
+              ci:
+                type: postgres
+                host: localhost
+                user: postgres
+                password: postgres
+                port: 5432
+                dbname: obi
+                schema: demo_dag
+                threads: 2
+          EOF
+
+      - name: Install dbt dependencies
+        run: dbt deps
+
+      - name: Check dbt configuration
+        run: dbt debug
+
+      - name: Run dbt build
+        run: dbt build
 
       - name: Upload dbt artifacts
         if: always()
@@ -36,5 +74,6 @@ jobs:
         with:
           name: dbt-artifacts
           path: |
-            logs
-            target
+            logs/
+            target/
+          if-no-files-found: warn
