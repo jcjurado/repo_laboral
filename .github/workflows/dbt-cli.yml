@@ -65,6 +65,9 @@ jobs:
       - name: Check dbt configuration
         run: dbt debug
 
+      - name: Load dbt seeds
+        run: dbt seed
+
       - name: Run dbt build
         run: dbt build
 
